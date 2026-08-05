@@ -62,7 +62,7 @@ To prevent unwanted agents from reading paths we use sandboxing. This is setup w
 - [Codex](https://github.com/openai/codex) (or omit)
 - [git-crypt](https://github.com/AGWA/git-crypt)
 - Node (for the two scripts)
-- [ai-guard](https://github.com/tinfoilsh/ai-guard) (the information-guard: sandboxing + git guard)
+- [information-guard](https://github.com/danielmccannsayles/information-guard) (sandboxing + git guard)
 
 ## Setup
 
@@ -100,10 +100,10 @@ To prevent unwanted agents from reading paths we use sandboxing. This is setup w
 
    If using [Tinfoil Proxy](https://tinfoil.sh), it runs locally on `127.0.0.1:3301` and handles attestation. Point pi at it via `baseUrl` in `pi/agent/models.json`.
 
-5. **Install the information-guard** (ai-guard repo):
+5. **Install the information-guard**:
 
    ```bash
-   cd ~/Desktop/coding/ai-guard  # or wherever
+   cd ~/Desktop/coding/information-guard  # or wherever
    ./install.sh
    ```
 
