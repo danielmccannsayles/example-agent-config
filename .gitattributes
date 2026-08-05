@@ -1,0 +1,14 @@
+# Uncomment this!
+
+# # Encrypt all memory/memories dirs 
+# claude/memory/** filter=git-crypt diff=git-crypt
+# pi/agent/memory/** filter=git-crypt diff=git-crypt
+
+# # Encrypt private instruction fragments
+# fragments/encrypted/** filter=git-crypt diff=git-crypt
+
+# # Encrypt pi extensions (may contain sensitive logic/keys)
+# pi/agent/extensions/** filter=git-crypt diff=git-crypt
+
+# # Encrypt remember folder 
+# remember/** filter=git-crypt diff=git-crypt

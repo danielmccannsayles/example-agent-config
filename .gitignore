@@ -1,0 +1,17 @@
+# Secrets 
+secrets.env
+
+# macOS
+.DS_Store
+
+# Changes frequently
+pi/agent/settings.json
+claude/plugins/known_marketplaces.json
+
+# git-crypt key 
+git-crypt-key
+
+# Generated
+provenance.html
+.provenance.html
+prompt.md
