@@ -1,0 +1,39 @@
+{
+  "providers": {
+    "tinfoil": {
+      "baseUrl": "http://127.0.0.1:3301/v1",
+      "api": "openai-responses",
+      "apiKey": "!security find-generic-password -ws find-tinfoil-key",
+      "models": [
+        {
+          "id": "glm-5-2",
+          "name": "GLM-5.2 (Tinfoil)",
+          "reasoning": true,
+          "input": ["text"],
+          "contextWindow": 384000,
+          "maxTokens": 16384,
+          "cost": {
+            "input": 1.5,
+            "output": 5.25,
+            "cacheRead": 0.375,
+            "cacheWrite": 0
+          }
+        },
+        {
+          "id": "gpt-oss-120b",
+          "name": "GPT-OSS 120B (Tinfoil)",
+          "reasoning": true,
+          "input": ["text"],
+          "contextWindow": 131000,
+          "maxTokens": 16384,
+          "cost": {
+            "input": 0.15,
+            "output": 0.6,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+# Secrets
+auth.json
+
+# Machine-specific trust store (project paths)
+trust.json
+
+# Runtime state (sessions, large, churning)
+sessions/
+
+# npm: track package.json + lock, ignore node_modules
+npm/node_modules/
+node_modules
+
+# Bundled binary (fd finder)
+bin/
+
+# macOS
+.DS_Store
+settings.json
+
+# Logs
+request-logs/
