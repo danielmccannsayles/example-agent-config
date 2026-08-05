@@ -3,7 +3,7 @@
     "tinfoil": {
       "baseUrl": "http://127.0.0.1:3301/v1",
       "api": "openai-responses",
-      "apiKey": "!security find-generic-password -ws find-tinfoil-key",
+      "apiKey": "$TINFOIL_API_KEY",
       "models": [
         {
           "id": "glm-5-2",
