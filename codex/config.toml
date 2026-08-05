@@ -1,0 +1,17 @@
+model = "gpt-5.6-sol"
+
+# information-guard replacement: deny reads/writes to protected paths via codex's
+# native sandbox (Seatbelt, same kernel mechanism as information-guard). 
+# Git guard (AGENT_FLAG) is still set via the shell alias.
+default_permissions = "information-guard"
+
+[permissions.information-guard]
+description = "Workspace-write with deny-read on information-guard protected paths."
+extends = ":workspace"
+
+[permissions.information-guard.filesystem]
+"~/agents/pi/agent/memory" = "deny"
+"~/agents/fragments/encrypted" = "deny"
+"~/agents/pi/agent/extensions" = "deny"
+"~/agents/remember" = "deny"
+

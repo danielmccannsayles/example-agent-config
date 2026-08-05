@@ -54,7 +54,7 @@ function isEncrypted(filepath) {
 const IMPORT_RE = /^(\s*)@(~?\/[^\s`]+|\.\/[^\s`]+|\.\.\/[^\s`]+)\s*$/;
 
 function resolveImportPath(importPath, baseDir) {
-  if (importPath.startsWith("~/")) return join(homedir(), importPath.slice(2));
+  if (importPath.startsWith("~/")) return join(REPO, importPath.slice(2));
   if (isAbsolute(importPath)) return importPath;
   return resolve(baseDir, importPath);
 }
@@ -324,8 +324,12 @@ ${tree.map(dirBranch).join("\n")}
 // ── 8. Write and open ─────────────────────────────────────────────────────
 const outPath = join(REPO, ".provenance.html");
 writeFileSync(outPath, html);
-execSync(`open ${outPath}`);
-console.log(`Provenance visualization opened in browser.`);
+try {
+  execSync(`open ${outPath}`);
+  console.log(`Provenance visualization opened in browser.`);
+} catch {
+  console.log(`Provenance visualization written to ${outPath}`);
+}
 console.log(
   `  ${allFiles.length} files, ${encCount} encrypted, ${plainCount} plaintext`,
 );

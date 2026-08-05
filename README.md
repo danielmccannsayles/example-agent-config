@@ -7,6 +7,12 @@ Disclaimer: This is pretty vibe-coded, and only graded on 'does this seem to do 
 To set this up you'll want to:
 
 1. Install the information guard
+
+```
+alias clod="information-guard-sandbox claude"
+alias codex="AGENT_FLAG=codex codex"
+```
+
 2. Install pi, claude, etc. into this centralized agents folder. (do users have to symlink or something?). Is it simple & easy to install? I don't know..
 3. Uncomment the
 4. Test it out - spin up your agents, have them try and open things. Go to Github, and make sure that it's being encrypted correctly. Note that filenames are not encrypted.

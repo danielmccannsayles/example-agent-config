@@ -9,7 +9,6 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, resolve, isAbsolute } from "node:path";
-import { homedir } from "node:os";
 
 const REPO = process.cwd();
 const agent = process.argv[2];
@@ -20,14 +19,17 @@ if (!agent || !["claude", "pi", "codex"].includes(agent)) {
 }
 
 const INDEX_FILE =
-  agent === "claude" ? "claude/CLAUDE.md" :
-  agent === "pi" ? "pi/agent/AGENTS.md" :
-  "codex/AGENTS.md";
+  agent === "claude"
+    ? "claude/CLAUDE.md"
+    : agent === "pi"
+      ? "pi/agent/AGENTS.md"
+      : "codex/AGENTS.md";
 
 const IMPORT_RE = /^(\s*)@(~?\/[^\s`]+|\.\/[^\s`]+|\.\.\/[^\s`]+)\s*$/;
 
 function resolveImportPath(importPath, baseDir) {
-  if (importPath.startsWith("~/")) return join(homedir(), importPath.slice(2));
+  // ~ resolves to the repo root (not $HOME) so @~/fragments/... stays self-contained.
+  if (importPath.startsWith("~/")) return join(REPO, importPath.slice(2));
   if (isAbsolute(importPath)) return importPath;
   return resolve(baseDir, importPath);
 }

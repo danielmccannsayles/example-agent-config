@@ -7,7 +7,7 @@
 # # Encrypt private instruction fragments
 # fragments/encrypted/** filter=git-crypt diff=git-crypt
 
-# # Encrypt pi extensions (may contain sensitive logic/keys)
+# # Encrypt pi extensions (Likely overkill, mainly so that I don't have to worry)
 # pi/agent/extensions/** filter=git-crypt diff=git-crypt
 
 # # Encrypt remember folder 
