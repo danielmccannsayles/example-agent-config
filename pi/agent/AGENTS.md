@@ -1,6 +1,6 @@
 ## Preferences
 
-@~/agents/fragments/preferences.md
+@~/agents/fragments/encrypted/preferences.md
 
 ## Weaker preferences
 

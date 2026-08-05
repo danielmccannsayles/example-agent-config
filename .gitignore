@@ -12,6 +12,5 @@ claude/plugins/known_marketplaces.json
 git-crypt-key
 
 # Generated
-provenance.html
 .provenance.html
 prompt.md

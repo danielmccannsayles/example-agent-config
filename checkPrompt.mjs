@@ -9,8 +9,12 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, resolve, isAbsolute } from "node:path";
+import { homedir } from "node:os";
+import { execSync } from "node:child_process";
 
-const REPO = process.cwd();
+const REPO = execSync("git rev-parse --show-toplevel", {
+  encoding: "utf-8",
+}).trim();
 const agent = process.argv[2];
 
 if (!agent || !["claude", "pi", "codex"].includes(agent)) {
@@ -28,8 +32,12 @@ const INDEX_FILE =
 const IMPORT_RE = /^(\s*)@(~?\/[^\s`]+|\.\/[^\s`]+|\.\.\/[^\s`]+)\s*$/;
 
 function resolveImportPath(importPath, baseDir) {
-  // ~ resolves to the repo root (not $HOME) so @~/fragments/... stays self-contained.
-  if (importPath.startsWith("~/")) return join(REPO, importPath.slice(2));
+  // The index files import @~/agents/... (absolute, so they resolve through the
+  // ~/.claude / ~/.pi symlinks). Map ~/agents/ to this checkout so the script
+  // works wherever the repo lives; other ~/ paths resolve to $HOME as usual.
+  if (importPath.startsWith("~/agents/"))
+    return join(REPO, importPath.slice("~/agents/".length));
+  if (importPath.startsWith("~/")) return join(homedir(), importPath.slice(2));
   if (isAbsolute(importPath)) return importPath;
   return resolve(baseDir, importPath);
 }

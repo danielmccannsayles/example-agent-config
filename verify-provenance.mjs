@@ -54,7 +54,10 @@ function isEncrypted(filepath) {
 const IMPORT_RE = /^(\s*)@(~?\/[^\s`]+|\.\/[^\s`]+|\.\.\/[^\s`]+)\s*$/;
 
 function resolveImportPath(importPath, baseDir) {
-  if (importPath.startsWith("~/")) return join(REPO, importPath.slice(2));
+  // ~/agents/ maps to this checkout (see checkPrompt.mjs); other ~/ → $HOME.
+  if (importPath.startsWith("~/agents/"))
+    return join(REPO, importPath.slice("~/agents/".length));
+  if (importPath.startsWith("~/")) return join(homedir(), importPath.slice(2));
   if (isAbsolute(importPath)) return importPath;
   return resolve(baseDir, importPath);
 }
