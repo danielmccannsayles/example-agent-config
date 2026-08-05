@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Visualize what's encrypted on GitHub and what each agent sees.
 //
-// Run: node provenance.mjs
+// Run: node visualize-provenance.mjs
 // Opens a browser with the visualization.
 //
 // Encryption status is checked empirically through git blob content -
@@ -54,7 +54,7 @@ function isEncrypted(filepath) {
 const IMPORT_RE = /^(\s*)@(~?\/[^\s`]+|\.\/[^\s`]+|\.\.\/[^\s`]+)\s*$/;
 
 function resolveImportPath(importPath, baseDir) {
-  // ~/agents/ maps to this checkout (see checkPrompt.mjs); other ~/ → $HOME.
+  // ~/agents/ maps to this checkout (see compile-prompt.mjs); other ~/ → $HOME.
   if (importPath.startsWith("~/agents/"))
     return join(REPO, importPath.slice("~/agents/".length));
   if (importPath.startsWith("~/")) return join(homedir(), importPath.slice(2));

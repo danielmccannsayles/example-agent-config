@@ -51,8 +51,8 @@ To prevent unwanted agents from reading paths we use sandboxing. This is setup w
 │   ├── shared-preferences.md  # Shared across all agents (plaintext)
 │   └── encrypted/             # Pi-only (git-crypt encrypted)
 ├── remember/                  # Things to save (git-crypt encrypted)
-├── verify-provenance.mjs      # Visualize what's encrypted / what each agent sees
-└── checkPrompt.mjs            # Assemble & view an agent's full prompt
+├── visualize-provenance.mjs   # Visualize what's encrypted / what each agent sees
+└── compile-prompt.mjs         # Assemble & view an agent's full prompt
 ```
 
 ## Prerequisites
@@ -124,12 +124,12 @@ To make sure that your requests are verfiable private, use the [Tinfoil Proxy](h
 7. **Test it:**
 
    ```bash
-   node verify-provenance.mjs   # visual on data provenance
-   node checkPrompt.mjs pi # creates prompt.md
+   node visualize-provenance.mjs   # visual on data provenance
+   node compile-prompt.mjs pi # creates prompt.md
    ```
 
    **Make sure it does NOT look like this:**
 
-   ![verify-provenance before setup: 0 encrypted, everything plain, nothing blocked](agent_config_not_working.png)
+   ![visualize-provenance before setup: 0 encrypted, everything plain, nothing blocked](agent_config_not_working.png)
 
    Spin up your agents, have them try to read things they shouldn't. Push to GitHub and verify the encrypted paths are ciphertext (filenames are not encrypted).

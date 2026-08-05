@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// checkPrompt.mjs — assemble and output the exact prompt an agent sees.
+// compile-prompt.mjs — assemble and output the exact prompt an agent sees.
 //
-// Run: node checkPrompt.mjs [claude|pi]
+// Run: node compile-prompt.mjs [claude|pi]
 // Outputs the assembled prompt (with @imports expanded) to prompt.md (gitignored).
 //
 // For claude: reads claude/CLAUDE.md, expands @import (Claude's native syntax).
@@ -18,7 +18,7 @@ const REPO = execSync("git rev-parse --show-toplevel", {
 const agent = process.argv[2];
 
 if (!agent || !["claude", "pi", "codex"].includes(agent)) {
-  console.error("Usage: node checkPrompt.mjs [claude|pi|codex]");
+  console.error("Usage: node compile-prompt.mjs [claude|pi|codex]");
   process.exit(1);
 }
 
