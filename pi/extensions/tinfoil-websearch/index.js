@@ -1,8 +1,9 @@
 // Tinfoil web search as native pi tools.
 //
 // Registers `web_search` and `fetch` tools backed by Tinfoil's confidential web-search
-// MCP server (https://websearch.tinfoil.sh/mcp — search runs in an enclave, ZDR via Exa).
-// The model calls them like any other tool, so they render as normal pi tool cards.
+// MCP server (search runs in a secure enclave, ZDR via Exa). Uses the Tinfoil JS SDK's
+// SecureClient for attested, end-to-end-encrypted requests — the MCP transport rides on
+// top of SecureClient.fetch so the enclave verifies before connecting.
 //
 // The tool result `content` carries full snippets for the model; a slim `details` drives
 // a compact, expandable card (query + result list) so the UI stays readable.
@@ -11,11 +12,15 @@ import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { SecureClient } from "tinfoil";
 import { Text } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
 
-const ENDPOINT =
-  process.env.TINFOIL_WEBSEARCH_URL || "https://websearch.tinfoil.sh/mcp";
+const ENCLAVE_URL =
+  process.env.TINFOIL_WEBSEARCH_URL || "https://websearch.tinfoil.sh";
+const CONFIG_REPO = process.env.TINFOIL_WEBSERACH_CONFIG_REPO || "tinfoilsh/confidential-websearch";
 
 // Resolve a pi config value (apiKey / header) the same way pi does:
 //   "!cmd"    -> run the command, return trimmed stdout (e.g. macOS keychain)
@@ -70,84 +75,62 @@ function hostname(url) {
   }
 }
 
-function parseSSE(text) {
-  const out = [];
-  for (const line of text.split(/\r?\n/)) {
-    const trimmed = line.startsWith("data:")
-      ? line.slice(5).trim()
-      : line.startsWith("{")
-        ? line
-        : "";
-    if (!trimmed) continue;
-    try {
-      out.push(JSON.parse(trimmed));
-    } catch {
-      // ignore non-JSON SSE frames (event:, comments, keep-alives)
-    }
-  }
-  return out;
-}
+// Lazily create a verified MCP client. SecureClient performs attestation on first
+// ready(); the dedup promise caches it so the first tool call pays the cost.
+let clientPromise = null;
 
-// Minimal MCP-over-HTTP client: initialize to obtain a session, then tools/call.
-// Throws on transport/protocol/tool error so pi marks the tool call as failed.
-async function mcpCall(toolName, args, signal) {
-  const key = resolveApiKey();
-  if (!key) {
+async function getClient(signal) {
+  if (clientPromise) return clientPromise;
+
+  const apiKey = resolveApiKey();
+  if (!apiKey) {
     throw new Error(
       "No Tinfoil API key (set providers.tinfoil.apiKey in models.json — supports !command, $ENV, or literal).",
     );
   }
-  const headers = {
-    Authorization: `Bearer ${key}`,
-    "Content-Type": "application/json",
-    Accept: "application/json, text/event-stream",
-  };
 
-  const initRes = await fetch(ENDPOINT, {
-    method: "POST",
-    headers,
-    signal,
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: 1,
-      method: "initialize",
-      params: {
-        protocolVersion: "2025-06-18",
-        capabilities: {},
-        clientInfo: { name: "pi-tinfoil-websearch", version: "1" },
+  clientPromise = (async () => {
+    const secure = new SecureClient({ enclaveURL: ENCLAVE_URL, configRepo: CONFIG_REPO });
+    await secure.ready();
+
+    // getEnclaveURL() returns the enclave root (e.g. "https://websearch.tinfoil.sh").
+    // getBaseURL() returns the OpenAI-compatible API base (".../v1/"), which 404s for /mcp.
+    const transport = new StreamableHTTPClientTransport(
+      new URL(secure.getEnclaveURL() + "/mcp"),
+      {
+        fetch: secure.fetch,
+        requestInit: {
+          headers: { Authorization: `Bearer ${apiKey}` },
+        },
       },
-    }),
-  });
-  const sessionId = initRes.headers.get("mcp-session-id");
-  await initRes.text();
-  if (!initRes.ok || !sessionId) {
-    throw new Error(`MCP initialize failed (HTTP ${initRes.status}).`);
+    );
+
+    const client = new Client({
+      name: "pi-tinfoil-websearch",
+      version: "1",
+    });
+    await client.connect(transport);
+    return client;
+  })();
+
+  try {
+    return await clientPromise;
+  } catch (err) {
+    clientPromise = null;
+    throw err;
   }
+}
 
-  const callRes = await fetch(ENDPOINT, {
-    method: "POST",
-    headers: { ...headers, "Mcp-Session-Id": sessionId },
-    signal,
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: 2,
-      method: "tools/call",
-      params: { name: toolName, arguments: args },
-    }),
-  });
-  const messages = parseSSE(await callRes.text());
-  const msg = messages.find((m) => m.id === 2) ?? messages.pop();
-  if (!msg) throw new Error(`No MCP response (HTTP ${callRes.status}).`);
-  if (msg.error)
-    throw new Error(msg.error.message || JSON.stringify(msg.error));
-
-  const result = msg.result || {};
+async function mcpCall(toolName, args, signal) {
+  const client = await getClient(signal);
+  const result = await client.callTool({ name: toolName, arguments: args }, undefined, { signal });
   const text = (result.content || [])
     .filter((c) => c.type === "text")
     .map((c) => c.text)
     .join("\n");
-  if (result.isError)
+  if (result.isError) {
     throw new Error(text || "Web search tool returned an error.");
+  }
   return { text, structured: result.structuredContent };
 }
 

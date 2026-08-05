@@ -1,0 +1,14 @@
+{
+  "name": "tinfoil-websearch",
+  "private": true,
+  "type": "module",
+  "pi": {
+    "extensions": [
+      "./index.js"
+    ]
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "tinfoil": "^1.2.1"
+  }
+}
