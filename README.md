@@ -63,6 +63,7 @@ To prevent unwanted agents from reading paths we use sandboxing. This is setup w
 - [git-crypt](https://github.com/AGWA/git-crypt)
 - Node (for the two scripts)
 - [information-guard](https://github.com/danielmccannsayles/information-guard) (sandboxing + git guard)
+- [vscode-hatch](https://github.com/danielmccannsayles/vscode-hatch) (VS Code extension — required by pi's vscode-hatch extension for VS Code awareness/tools; install locally per its README)
 
 ## Setup
 
@@ -123,8 +124,8 @@ To make sure that your requests are verfiable private, use the [Tinfoil Proxy](h
 7. **Test it:**
 
    ```bash
-   node verify-provenance.mjs   # opens a browser showing what's encrypted / who sees what
-   node checkPrompt.mjs pi      # assembles pi's full prompt to prompt.md
+   node verify-provenance.mjs   # visual on data provenance
+   node checkPrompt.mjs pi # creates prompt.md
    ```
 
    **Make sure it does NOT look like this:**
