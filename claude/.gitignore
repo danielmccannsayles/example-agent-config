@@ -1,0 +1,30 @@
+# Machine-specific local settings (hardcoded repo paths)
+settings.local.json
+
+# Runtime state (large, churning, regenerable)
+.last-cleanup
+.last-update-result.json
+stats-cache.json
+mcp-needs-auth-cache.json
+history.jsonl
+downloads/
+sessions/
+session-env/
+projects/
+file-history/
+paste-cache/
+tasks/
+cache/
+backups/
+debug/
+shell-snapshots/
+ide/
+telemetry/
+
+# Plugins: track config JSON, ignore cloned/downloaded content
+plugins/cache/
+plugins/data/
+plugins/marketplaces/
+plugins/repos/
+plugins/.last_inuse_sweep
+plugins/known_marketplaces.json

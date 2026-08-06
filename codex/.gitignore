@@ -1,0 +1,45 @@
+# Secrets
+auth.json
+
+# Memory (backed up separately, encrypted)
+
+# Runtime state (large, churning, regenerable)
+.codex-global-state.json
+.codex-global-state.json.bak
+.personality_migration
+history.jsonl
+session_index.jsonl
+sessions/
+shell_snapshots/
+tmp/
+log/
+logs_2.sqlite*
+state_5.sqlite*
+goals_1.sqlite*
+sqlite/
+
+# Caches & derived data
+cache/
+model_catalog.json
+models_cache.json
+installation_id
+version.json
+
+# Nested git repo (vendored skills clone)
+vendor_imports/
+
+# Bundled system skills & plugin cache (installed, not authored)
+skills/
+plugins/
+
+# Computer-use app bundle (51MB binary)
+computer-use/
+
+# Temp dir (.tmp is 500MB+)
+.tmp/
+
+# macOS
+.DS_Store
+
+# Codex memory database (binary runtime state, not curated memories)
+memories_1.sqlite*
