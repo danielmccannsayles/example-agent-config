@@ -113,6 +113,7 @@ To make sure that your requests are verfiable private, use the [Tinfoil Proxy](h
          "~/agents/pi/agent/memory",
          "~/agents/fragments/encrypted",
          "~/agents/pi/agent/extensions",
+         "~/agents/pi/agent/sessions",
          "~/agents/remember"
        ],
        "writeContainment": { "enabled": true, "allowWrite": [] },

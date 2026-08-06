@@ -111,7 +111,8 @@ const codexImports = parseImports("codex/AGENTS.md");
 // The sandbox blocks read AND write at the kernel level (sandbox-exec EPERM).
 // The git guard blocks commit/push for the entire repo (applies to all files
 // equally, so shown as a note rather than per-file).
-// Pi is never sandboxed — it can always read everything.
+// Pi is never read-blocked — it can always read everything (its sandbox
+// profile only contains writes).
 // Claude is sandboxed via `information-guard-sandbox` (wraps the whole process).
 // Codex is sandboxed via its own native Seatbelt sandbox (same kernel
 // mechanism), configured in ~/.codex/config.toml — NOT via information-guard-sandbox
@@ -166,7 +167,7 @@ const plainCount = allFiles.length - encCount;
 
 // Per-agent status: "prompt" (in @import chain), "read" (can read, not in
 // prompt), or "blocked" (sandbox prevents reading — Claude only; pi is never
-// sandboxed). A file can be encrypted on GitHub but still readable locally
+// read-blocked). A file can be encrypted on GitHub but still readable locally
 // (e.g. claude/memory — encrypted, but Claude can read its own memories).
 function piStatus(f) {
   return f.inPi ? "prompt" : null;
