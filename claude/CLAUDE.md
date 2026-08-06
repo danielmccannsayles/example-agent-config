@@ -1,4 +1,4 @@
-Don't do <specific thing that claude does>
+Don't do {specific thing that claude does}
 
 ## Preferences
 

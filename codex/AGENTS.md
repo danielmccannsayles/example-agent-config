@@ -1,4 +1,4 @@
-Don't do <specific thing that gpt does>
+Don't do {specific thing that gpt does}
 
 ## Preferences
 

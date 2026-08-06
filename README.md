@@ -4,7 +4,7 @@ Disclaimer: This is pretty vibe-coded, and only graded on 'does this seem to do 
 
 ## How it works
 
-One git repo at `~/agents/` holds the config for three agents — pi, Claude, Codex. Each agent's config dir is a symlink into the repo:
+One git repo at `~/agents/` holds the config for three agents — Pi, Claude, Codex. Each agent's configuration dir should be set as a symlink into this repo:
 
 ```
 ~/.pi     → ~/agents/pi
