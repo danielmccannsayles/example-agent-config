@@ -115,14 +115,20 @@ To make sure that your requests are verfiable private, use the [Tinfoil Proxy](h
          "~/agents/pi/agent/extensions",
          "~/agents/remember"
        ],
-       "writeContainment": { "enabled": true, "allowWrite": [] }
+       "writeContainment": { "enabled": true, "allowWrite": [] },
+       "profiles": {
+         "pi": { "protectedPaths": [] }
+       }
      }
      ```
+
+     The `pi` profile is selected automatically when wrapping pi — it keeps all reads (pi is the trusted agent) but inherits write containment, so it still can't `rm -rf` your computer.
 
    - aliases in `~/.zshrc`:
 
      ```bash
      alias claude='information-guard-sandbox claude' # claude needs sandbox, agent flag is in hooks
+     alias pi='information-guard-sandbox pi' # write containment only, via the pi profile
      alias codex='AGENT_FLAG=codex codex' # codex has its own sandbox (apple sandboxes don't nest), but needs the agent flag
      ```
 
