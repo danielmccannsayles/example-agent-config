@@ -18,9 +18,8 @@ import { SecureClient } from "tinfoil";
 import { Text } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
 
-const ENCLAVE_URL =
-  process.env.TINFOIL_WEBSEARCH_URL || "https://websearch.tinfoil.sh";
-const CONFIG_REPO = process.env.TINFOIL_WEBSERACH_CONFIG_REPO || "tinfoilsh/confidential-websearch";
+const ENCLAVE_URL = "https://websearch.tinfoil.sh";
+const CONFIG_REPO = "tinfoilsh/confidential-websearch";
 
 // Resolve a pi config value (apiKey / header) the same way pi does:
 //   "!cmd"    -> run the command, return trimmed stdout (e.g. macOS keychain)
@@ -90,7 +89,10 @@ async function getClient(signal) {
   }
 
   clientPromise = (async () => {
-    const secure = new SecureClient({ enclaveURL: ENCLAVE_URL, configRepo: CONFIG_REPO });
+    const secure = new SecureClient({
+      enclaveURL: ENCLAVE_URL,
+      configRepo: CONFIG_REPO,
+    });
     await secure.ready();
 
     // getEnclaveURL() returns the enclave root (e.g. "https://websearch.tinfoil.sh").
@@ -123,7 +125,11 @@ async function getClient(signal) {
 
 async function mcpCall(toolName, args, signal) {
   const client = await getClient(signal);
-  const result = await client.callTool({ name: toolName, arguments: args }, undefined, { signal });
+  const result = await client.callTool(
+    { name: toolName, arguments: args },
+    undefined,
+    { signal },
+  );
   const text = (result.content || [])
     .filter((c) => c.type === "text")
     .map((c) => c.text)

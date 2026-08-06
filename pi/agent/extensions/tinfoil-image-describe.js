@@ -29,35 +29,34 @@ const FAILURE_TTL_MS = 30_000;
 // downstream text-only model understands it's rendered content, not a vision
 // model's editorializing. Then quote all visible text verbatim with styling
 // notes, so lines like an italic thinking block don't read as commentary.
-const DESCRIBE_PROMPT = [
-  "Describe this image for a coding agent that cannot see it. Your output will be",
-  "fed verbatim to a text-only model — it must be factual and complete.",
-  "",
-  "Format your response in two parts:",
-  "",
-  "1. STRUCTURE (1-3 sentences): What kind of image is this? (terminal screenshot,",
-  "   code editor, chat UI, diagram, chart, photo, etc.) Describe the visual",
-  "   context: background color, layout, regions, text styling (italic, bold,",
-  "   colored, dimmed), and where things are positioned. This orients the reader.",
-  "",
-  "2. VISIBLE TEXT (verbatim): Reproduce ALL text visible in the image EXACTLY —",
-  "   code, commands, file paths, URLs, error messages, stack traces, log lines,",
-  "   labels, captions. Exact characters, line breaks, and indentation. If a line",
-  "   has distinct styling (italic, dimmed, a different color), note that inline",
-  "   like: (italic, dimmed) the text. If the image is mostly text, quote each line.",
-  "",
-  "Rules:",
-  "- Do NOT guess intent, interpret meaning, or characterize the user.",
-  '- Do NOT add commentary like "Also", "It appears", "The user is being".',
-  '- Do NOT say "The image shows" or "I can see" — just describe.',
-  "- If text is cut off at an edge, note it: (cut off)",
-  "- Color: only mention when it carries meaning (status colors, syntax highlighting).",
-  "",
-  "Example output for a terminal screenshot:",
-  "Dark-background terminal screenshot. Two lines of monospaced text.",
-  '(italic, dimmed) Also "hewwo" – Daniel being playful. Let me retry web_sea',
-  "Hewwo! Let me retry websearch now.",
-].join("\n");
+const DESCRIBE_PROMPT = `
+Describe this image for an agent that cannot see it. 
+Your output will be fed verbatim to a text-only model
+
+Format your response in two parts:
+
+1. STRUCTURE (1-3 sentences): What kind of image is this? (terminal screenshot,
+   code editor, chat UI, diagram, chart, photo, etc.) Describe the visual
+   context: background color, layout, regions, text styling (italic, bold,
+   colored, dimmed), and where things are positioned. This orients the reader.
+
+2. VISIBLE TEXT (verbatim): Reproduce ALL text visible in the image EXACTLY —
+   code, commands, file paths, URLs, error messages, stack traces, log lines,
+   labels, captions. Exact characters, line breaks, and indentation. If a line
+   has distinct styling (italic, dimmed, a different color), note that inline
+   like: (italic, dimmed) the text. If the image is mostly text, quote each line.
+
+Rules:
+- Do NOT guess intent, interpret meaning, or characterize the user.
+- Do NOT add commentary like "Also", "It appears", "The user is being".
+- Do NOT say "The image shows" or "I can see" — just describe.
+- If text is cut off at an edge, note it: (cut off)
+- Color: only mention when it carries meaning (status colors, syntax highlighting).
+
+Example output for a terminal screenshot:
+Dark-background terminal screenshot. Two lines of monospaced text.
+(italic, dimmed) Also "hewwo" – Daniel being playful. Let me retry web_sea
+Hewwo! Let me retry websearch now.`;
 
 // Resolve a pi config value the same way pi does:
 //   "!cmd"    -> run the command, return trimmed stdout (e.g. macOS keychain)

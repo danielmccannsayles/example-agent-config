@@ -57,7 +57,7 @@ To prevent unwanted agents from reading paths we use sandboxing. This is setup w
 
 ## Prerequisites
 
-- [pi](https://github.com/earendil-works/pi-coding-agent)
+- [pi](https://github.com/earendil-works/pi)
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
 - [Codex](https://github.com/openai/codex) (or omit)
 - [git-crypt](https://github.com/AGWA/git-crypt)
@@ -133,3 +133,11 @@ To make sure that your requests are verfiable private, use the [Tinfoil Proxy](h
    ![visualize-provenance before setup: 0 encrypted, everything plain, nothing blocked](agent_config_not_working.png)
 
    Spin up your agents, have them try to read things they shouldn't. Push to GitHub and verify the encrypted paths are ciphertext (filenames are not encrypted).
+
+8. **Optional extensions**
+
+If using the websearch extension, make sure to install deps, these aren't auto-installed by Pi.
+
+```bash
+cd ~/agents/pi/agent/extensions/tinfoil-websearch && npm install
+```
