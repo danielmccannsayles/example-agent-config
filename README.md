@@ -24,7 +24,7 @@ Claude and Codex share `shared-preferences.md`. Pi gets that plus `fragments/enc
 
 Git-crypt encrypts the private stuff so the repo can be backed up on GitHub without leaking anything. Filenames are not encrypted.
 
-To prevent unwanted agents from reading paths we use sandboxing. This is setup with the [information-guard](https://github.com/danielmccannsayles/information-guard)
+To prevent unwanted agents from reading paths we use sandboxing. This is setup with the [information-guard](https://github.com/danielmccannsayles/information-guard). By default it also constrains some common dangerous writes. If you're switching to this from eg. the default claude code sandbox, it shouldn't weaken the protection much, but it's worth making sure. The information-guard does not touch network access, unlike Claudes sandbox, so this is a change.
 
 ## Directory structure
 
@@ -103,21 +103,30 @@ export TINFOIL_API_KEY="your-key-here"  # in ~/.zshrc
 
 To make sure that your requests are verfiable private, use the [Tinfoil Proxy](https://docs.tinfoil.sh/local-proxy/app). It runs locally on `127.0.0.1:3301` and handles attestation. Point pi at it via `baseUrl` in `pi/agent/models.json`.
 
-5. **Install the information-guard**:
+5. **Install the [information-guard](https://github.com/danielmccannsayles/information-guard)** — follow its README. For this setup specifically:
+   - `~/agents` in `~/.config/information-guard/repos.txt` (git guard)
+   - the private paths in `~/.config/information-guard/sandbox.json`:
 
-   ```bash
-   cd ~/Desktop/coding/information-guard  # or wherever
-   ./install.sh
-   ```
+     ```json
+     {
+       "protectedPaths": [
+         "~/agents/pi/agent/memory",
+         "~/agents/fragments/encrypted",
+         "~/agents/pi/agent/extensions",
+         "~/agents/remember"
+       ],
+       "writeContainment": { "enabled": true, "allowWrite": [] }
+     }
+     ```
 
-   This installs git hooks (block agent commits to protected repos) and the sandbox wrapper. Then add aliases to `~/.zshrc`:
+   - aliases in `~/.zshrc`:
 
-   ```bash
-   alias claude='information-guard-sandbox claude' # claude needs sandbox, agent flag is in hooks
-   alias codex='AGENT_FLAG=codex codex' # codex doesn't need sandbox but does need agent flag
-   ```
+     ```bash
+     alias claude='information-guard-sandbox claude' # claude needs sandbox, agent flag is in hooks
+     alias codex='AGENT_FLAG=codex codex' # codex has its own sandbox (apple sandboxes don't nest), but needs the agent flag
+     ```
 
-   Configure protected paths in `~/.config/information-guard/sandbox.json` and protected repos in `~/.config/information-guard/repos.txt`.
+   - codex gets the same protection from its native sandbox: `information-guard-sandbox --print-codex-config` generates the profile from your sandbox.json — paste it into `~/.codex/config.toml` (this repo's `codex/config.toml` shows the result).
 
 6. **Uncomment `.gitattributes`** so git-crypt starts encrypting.
 
