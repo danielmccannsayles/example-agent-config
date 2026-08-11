@@ -1,7 +1,7 @@
 Example agent config. Companion to [My Private Personal Agent](https://www.lesswrong.com/posts/ddgA87uvXSsWDfu2a/my-private-personal-agent).
 
 > [!NOTE]
-> **Update (2026-08): Claude's sandboxing approach has changed.** Claude now uses its own built-in sandbox (enabled via `sandbox.enabled` in `~/.claude/settings.json`) plus permission deny rules — not the `information-guard-sandbox` process wrapper. The deny rules are generated from the same `sandbox.json` via `information-guard-sandbox --print-claude-config`. See [information-guard's claude sandbox doc](https://github.com/danielmccannsayles/information-guard/blob/main/docs/claude-native-sandbox.md) for details.
+> **Update (Aug 11): Claude's sandboxing approach has changed.** Claude now uses its own built-in sandbox (enabled via `sandbox.enabled` in `~/.claude/settings.json`) plus permission deny rules — not the `information-guard-sandbox` process wrapper. The deny rules are generated from the same `sandbox.json` via `information-guard-sandbox --print-claude-config`. See [information-guard's claude sandbox doc](https://github.com/danielmccannsayles/information-guard/blob/main/docs/claude-native-sandbox.md) for details.
 
 Disclaimer: This is pretty vibe-coded, and only graded on 'does this seem to do what I want'. It also assumes a Mac. Use at your own risk :).
 
