@@ -1,4 +1,7 @@
-Example agent config. Companion to [blog here]().
+Example agent config. Companion to [My Private Personal Agent](https://www.lesswrong.com/posts/ddgA87uvXSsWDfu2a/my-private-personal-agent).
+
+> [!NOTE]
+> **Update (2026-08): Claude's sandboxing approach has changed.** Claude now uses its own built-in sandbox (enabled via `sandbox.enabled` in `~/.claude/settings.json`) plus permission deny rules — not the `information-guard-sandbox` process wrapper. The deny rules are generated from the same `sandbox.json` via `information-guard-sandbox --print-claude-config`. See [information-guard's claude sandbox doc](https://github.com/danielmccannsayles/information-guard/blob/main/docs/claude-native-sandbox.md) for details.
 
 Disclaimer: This is pretty vibe-coded, and only graded on 'does this seem to do what I want'. It also assumes a Mac. Use at your own risk :).
 
@@ -24,7 +27,7 @@ Claude and Codex share `shared-preferences.md`. Pi gets that plus `fragments/enc
 
 Git-crypt encrypts the private stuff so the repo can be backed up on GitHub without leaking anything. Filenames are not encrypted.
 
-Each agent is sandboxed to prevent unwanted reads/writes. **Pi** is wrapped with [information-guard](https://github.com/danielmccannsayles/information-guard) (process-level sandbox). **Claude** and **Codex** use their own built-in sandboxes — information-guard generates the deny-rule config from the same `sandbox.json`, so there's one source of truth. For Claude, this avoids the keychain-refresh breakage that wrapping causes (the main process needs to be unsandboxed for keychain writes and setuid exec like `/bin/ps`). See [information-guard's claude sandbox doc](https://github.com/danielmccannsayles/information-guard/blob/main/docs/claude-native-sandbox.md) for the full rationale and tradeoff.
+Each agent is sandboxed to prevent unwanted reads/writes. **Pi** is wrapped with [information-guard](https://github.com/danielmccannsayles/information-guard) (process-level sandbox). **Claude** and **Codex** use their own built-in sandboxes — information-guard generates the deny-rule config from the same `sandbox.json`, so there's one source of truth. See [information-guard's claude sandbox doc](https://github.com/danielmccannsayles/information-guard/blob/main/docs/claude-native-sandbox.md) for the full rationale and tradeoff.
 
 ## Directory structure
 
