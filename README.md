@@ -24,7 +24,7 @@ Claude and Codex share `shared-preferences.md`. Pi gets that plus `fragments/enc
 
 Git-crypt encrypts the private stuff so the repo can be backed up on GitHub without leaking anything. Filenames are not encrypted.
 
-To prevent unwanted agents from reading paths we use sandboxing. This is setup with the [information-guard](https://github.com/danielmccannsayles/information-guard). By default it also constrains some common dangerous writes. If you're switching to this from eg. the default claude code sandbox, it shouldn't weaken the protection much, but it's worth making sure. The information-guard does not touch network access, unlike Claudes sandbox, so this is a change.
+Each agent is sandboxed to prevent unwanted reads/writes. **Pi** is wrapped with [information-guard](https://github.com/danielmccannsayles/information-guard) (process-level sandbox). **Claude** and **Codex** use their own built-in sandboxes — information-guard generates the deny-rule config from the same `sandbox.json`, so there's one source of truth. For Claude, this avoids the keychain-refresh breakage that wrapping causes (the main process needs to be unsandboxed for keychain writes and setuid exec like `/bin/ps`). See [information-guard's claude sandbox doc](https://github.com/danielmccannsayles/information-guard/blob/main/docs/claude-native-sandbox.md) for the full rationale and tradeoff.
 
 ## Directory structure
 
@@ -32,7 +32,7 @@ To prevent unwanted agents from reading paths we use sandboxing. This is setup w
 ~/agents/
 ├── claude/
 │   ├── CLAUDE.md              # Claude's system prompt (index, @imports fragments)
-│   ├── settings.json          # SessionStart hook: sets AGENT_FLAG=claude
+│   ├── settings.json          # Sandbox config, deny rules, SessionStart hook (AGENT_FLAG)
 │   └── memory/                # Claude's memories (git-crypt encrypted)
 ├── codex/
 │   ├── AGENTS.md              # Codex's system prompt
@@ -128,11 +128,12 @@ To make sure that your requests are verfiable private, use the [Tinfoil Proxy](h
    - aliases in `~/.zshrc`:
 
      ```bash
-     alias claude='information-guard-sandbox claude' # claude needs sandbox, agent flag is in hooks
      alias pi='information-guard-sandbox pi' # write containment only, via the pi profile
      alias codex='AGENT_FLAG=codex codex' # codex has its own sandbox (apple sandboxes don't nest), but needs the agent flag
+     # Claude needs no alias — its built-in sandbox is enabled via sandbox.enabled in ~/.claude/settings.json
      ```
 
+   - **claude** gets the same protection from its native sandbox: `information-guard-sandbox --print-claude-config` generates the deny rules + sandbox config from your sandbox.json — paste into `~/.claude/settings.json` (this repo's `claude/settings.json` shows the result, plus additional Claude-specific hardening for secrets and dangerous commands).
    - codex gets the same protection from its native sandbox: `information-guard-sandbox --print-codex-config` generates the profile from your sandbox.json — paste it into `~/.codex/config.toml` (this repo's `codex/config.toml` shows the result).
 
 6. **Uncomment `.gitattributes`** so git-crypt starts encrypting.

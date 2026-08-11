@@ -107,13 +107,15 @@ const claudeImports = parseImports("claude/CLAUDE.md");
 const piImports = parseImports("pi/agent/AGENTS.md");
 const codexImports = parseImports("codex/AGENTS.md");
 
-// ── 5b. Claude access (information-guard sandbox) ──────────────────────────────────
-// The sandbox blocks read AND write at the kernel level (sandbox-exec EPERM).
+// ── 5b. Claude access (native sandbox + deny rules) ─────────────────────────────
+// Claude's native sandbox (sandbox-exec on the Bash tool) + permission deny
+// rules block reads/writes. The deny rules are generated from the same
+// sandbox.json via `information-guard-sandbox --print-claude-config` — so the
+// protectedPaths below are exactly what Claude can't read.
 // The git guard blocks commit/push for the entire repo (applies to all files
 // equally, so shown as a note rather than per-file).
 // Pi is never read-blocked — it can always read everything (its sandbox
 // profile only contains writes).
-// Claude is sandboxed via `information-guard-sandbox` (wraps the whole process).
 // Codex is sandboxed via its own native Seatbelt sandbox (same kernel
 // mechanism), configured in ~/.codex/config.toml — NOT via information-guard-sandbox
 let protectedPaths = [];
@@ -215,7 +217,7 @@ function badge(encrypted) {
 const STATUS_TITLES = {
   prompt: "in system prompt via @import",
   read: "can read, not in prompt",
-  blocked: "information-guard sandbox blocks read/write",
+  blocked: "sandbox blocks read/write",
   mixed: "mixed statuses in this dir",
 };
 
@@ -341,5 +343,5 @@ console.log(
   `  Pi sees ${piImports.length} fragments, Claude sees ${claudeImports.length}, Codex sees ${codexImports.length}`,
 );
 console.log(
-  `  ${blockedCount} files blocked from agents (information-guard sandbox)`,
+  `  ${blockedCount} files blocked from agents (sandbox)`,
 );
